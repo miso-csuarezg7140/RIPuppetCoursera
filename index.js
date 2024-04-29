@@ -82,6 +82,18 @@ console.log(inputValues);
         clean(temp_directory)
       }
 
+      //await page.waitForSelector('input[name="identification"]', { state: 'visible' , timeout: 110000 });
+      const config = require('./config.json');
+      // Navegar a la URL de login especificada en el archivo de configuración
+      await page.goto(config.url);
+      // Esperar que los campos de entrada sean visibles y llenarlos con los valores de configuración
+      await page.waitForSelector('input[name="identification"]', { state: 'visible', timeout: 30000 });
+      await page.fill('input[name="identification"]', config.values.identification);
+      await page.fill('input[name="password"]', config.values.password);
+      // Hacer clic en el botón de submit y esperar a la navegación
+      await page.click('button[type="submit"]');
+      await page.waitForNavigation();
+
       //-------------------------------------------------------------------------------------------------------------------------------------------------
       //Web application ripping
       //Initial params: Playwright's Page object, URL of the current page, index of current page, parent's index
@@ -132,7 +144,7 @@ async function recursiveExploration(page, link, depth, parentState){
     return;
   } 
   console.log("Exploring");
-  await page.goto(link, {waitUntil: 'networkidle2'}).catch((err)=>{
+  await page.goto(link, {waitUntil: 'networkidle'}).catch((err)=>{
     console.log(err); 
     return; 
   });
@@ -656,4 +668,3 @@ async function fillInput(elementHandle, page){
     elementHandle.click();
   }
 }
-
